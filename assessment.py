@@ -12,7 +12,6 @@ root.configure(bg=MAIN_GREEN)
 
 # Fixed Question Dataset with proper strings and arrays
 questions = [
-
     {
         "q": "When did World War II begin?",
         "options": ["1993", "1922", "1914", "1939"],
@@ -53,6 +52,7 @@ def show_frame(page_class):
 class HomePage(Frame):
     def __init__(self, parent):
         super().__init__(parent, bg=MAIN_GREEN)
+
         title = Label(
             self, text="Welcome to my quiz on World War II",
             font=("Arial", 34, "bold"), fg="white", bg=MAIN_GREEN
@@ -60,20 +60,23 @@ class HomePage(Frame):
         title.place(relx=0.5, rely=0.10, anchor=CENTER)
 
         self.image_label = Label(self, bg=MAIN_GREEN)
-        self.image_label.place(relx=0.5, rely=0.45, anchor=CENTER)
+        self.image_label.place(relx=0.5, rely=0.48, anchor=CENTER)  # Shifted down slightly for larger image
 
         try:
             opened_img = Image.open("intro.png")
-            self.intro_img = ImageTk.PhotoImage(opened_img)
+            # --- CHANGE IMAGE SIZE HERE ---
+            # Increase these two numbers to make the image even larger (width, height)
+            resized_img = opened_img.resize((1250, 600), Image.Resampling.LANCZOS)
+            self.intro_img = ImageTk.PhotoImage(resized_img)
             self.image_label.config(image=self.intro_img, text="")
             self.image_label.image = self.intro_img
         except Exception:
             self.image_label.config(text="[intro.png Not Found]", fg="yellow", bg=MAIN_GREEN, font=("Arial", 14))
 
         start_button = Button(
-            self, text="Start Quiz", font=("Arial", 18, "bold"),
-            bg="black", fg="white", activebackground="#222222", activeforeground="white",
-            bd=0, padx=35, pady=12, cursor="hand2", command=lambda: show_frame(QuizPage)
+            self, text="Start Quiz", font=("Arial", 18, "bold"), bg="black", fg="white",
+            activebackground="#222222", activeforeground="white", bd=0, padx=35, pady=12,
+            cursor="hand2", command=lambda: show_frame(QuizPage)
         )
         start_button.place(relx=0.5, rely=0.90, anchor=CENTER)
 
@@ -90,14 +93,14 @@ class QuizPage(Frame):
             self, text="", font=("Arial", 25, "bold"), fg="black", bg="#d9d9d9",
             wraplength=950, justify=CENTER, padx=20, pady=20
         )
-        self.question_label.place(relx=0.5, rely=0.10, anchor=CENTER)
+        self.question_label.place(relx=0.5, rely=0.12, anchor=CENTER)
 
         self.image_label = Label(self, bg=MAIN_GREEN)
-        self.image_label.place(relx=0.5, rely=0.42, anchor=CENTER)
+        self.image_label.place(relx=0.5, rely=0.45, anchor=CENTER)  # Positioned to fit the larger image
 
         self.option_buttons = []
-        positions = [(0.30, 0.85), (0.70, 0.85), (0.30, 0.70), (0.70, 0.70)]
-
+        # Adjusted positions to ensure buttons do not overlap the larger image
+        positions = [(0.30, 0.82), (0.70, 0.82), (0.30, 0.70), (0.70, 0.70)]
         for i in range(4):
             btn = Button(
                 self, text="", font=("Arial", 16, "bold"), bg="black", fg="white",
@@ -109,7 +112,7 @@ class QuizPage(Frame):
             self.option_buttons.append(btn)
 
         self.feedback_label = Label(self, text="", font=("Arial", 18, "bold"), fg="white", bg=MAIN_GREEN)
-        self.feedback_label.place(relx=0.5, rely=0.78, anchor=CENTER)
+        self.feedback_label.place(relx=0.5, rely=0.92, anchor=CENTER)  # Moved down below options
 
         self.previous_button = Button(self, text="← Previous", font=("Arial", 14, "bold"), bg="#d9d9d9", fg="black",
                                       bd=0, padx=20, pady=8, cursor="hand2", command=self.previous_question)
@@ -125,14 +128,16 @@ class QuizPage(Frame):
         global q_index, score
         self.answered = False
         q_data = questions[q_index]
-
         self.question_label.config(text=q_data["q"])
         self.score_label.config(text=f"Score: {score}")
         self.feedback_label.config(text="")
 
         try:
             opened_img = Image.open(q_data["image"])
-            self.current_img = ImageTk.PhotoImage(opened_img)
+            # --- CHANGE IMAGE SIZE HERE ---
+            # Increase these two numbers to make the image even larger (width, height)
+            resized_img = opened_img.resize((1000,400), Image.Resampling.LANCZOS)
+            self.current_img = ImageTk.PhotoImage(resized_img)
             self.image_label.config(image=self.current_img, text="")
             self.image_label.image = self.current_img
         except Exception:
@@ -146,7 +151,6 @@ class QuizPage(Frame):
         if self.answered:
             return
         self.answered = True
-
         q_data = questions[q_index]
         selected_ans = q_data["options"][selected_idx]
         correct_ans = q_data["answer"]
@@ -166,7 +170,6 @@ class QuizPage(Frame):
         if not self.answered:
             self.feedback_label.config(text="You must answer this question before you can proceed!", fg="yellow")
             return
-
         if q_index < len(questions) - 1:
             q_index += 1
             self.load_question()
