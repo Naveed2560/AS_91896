@@ -13,27 +13,45 @@ MAIN_GREEN = "#1e7e34"
 root.configure(bg=MAIN_GREEN)
 
 
-# Fixed Question Dataset with proper strings and arrays
+HOME_IMAGE_WIDTH = 900
+HOME_IMAGE_HEIGHT = 550
+
+
+QUIZ_IMAGE_WIDTH = 900
+QUIZ_IMAGE_HEIGHT =500
+
+
+
 questions = [
-
-
    {
        "q": "When did World War II begin?",
-       "options": ["1993", "1922", "1914", "1939"],
+       "options": ["1914", "1939", "1945", "1922"],
        "answer": "1939",
        "image": "question1.png"
    },
    {
-       "q": "Which major alliance fought against the Axis powers?",
-       "options": ["The Central Powers", "The Allied Powers", "The Entente Powers", "The Triple Alliance"],
-       "answer": "The Allied Powers",
+       "q": "Which country was led by Adolf Hitler in World War II?",
+       "options": ["India", "Italy", "Germany", "Afghanistan"],
+       "answer": "Germany",
        "image": "image2.png"
    },
    {
-       "q": "In which year did World War II end?",
-       "options": ["1941", "1939", "1945", "1950"],
-       "answer": "1945",
+       "q": "Which event caused the US to join World War II?",
+       "options": ["Battle of Britain", "Pearl Harbour attack", "D-Day", "Treaty of Versailles"],
+       "answer": "Pearl Harbour attack",
        "image": "image3.png"
+   },
+   {
+       "q": "Which alliance included Germany, Italy, and Japan?",
+       "options": ["NATO", "League of Nations", "Axis Powers", "British Empire"],
+       "answer": "Axis Powers",
+       "image": "image4.png"
+   },
+   {
+       "q": "Which city had the first atomic bomb dropped on it?",
+       "options": ["Tokyo", "Hiroshima", "Nagasaki", "Osaka"],
+       "answer": "Hiroshima",
+       "image": "image5.png"
    }
 ]
 
@@ -46,6 +64,8 @@ q_index = 0
 # UI Frame Controller Setup
 container = Frame(root, bg=MAIN_GREEN)
 container.pack(fill="both", expand=True)
+
+
 frames = {}
 
 
@@ -63,9 +83,14 @@ def show_frame(page_class):
 class HomePage(Frame):
    def __init__(self, parent):
        super().__init__(parent, bg=MAIN_GREEN)
+
+
        title = Label(
-           self, text="Welcome to my quiz on World War II",
-           font=("Arial", 34, "bold"), fg="white", bg=MAIN_GREEN
+           self,
+           text="Welcome to my quiz on World War II",
+           font=("Arial", 34, "bold"),
+           fg="white",
+           bg=MAIN_GREEN
        )
        title.place(relx=0.5, rely=0.10, anchor=CENTER)
 
@@ -76,7 +101,8 @@ class HomePage(Frame):
 
        try:
            opened_img = Image.open("intro.png")
-           self.intro_img = ImageTk.PhotoImage(opened_img)
+           resized_img = opened_img.resize((HOME_IMAGE_WIDTH, HOME_IMAGE_HEIGHT), Image.Resampling.LANCZOS)
+           self.intro_img = ImageTk.PhotoImage(resized_img)
            self.image_label.config(image=self.intro_img, text="")
            self.image_label.image = self.intro_img
        except Exception:
@@ -84,9 +110,18 @@ class HomePage(Frame):
 
 
        start_button = Button(
-           self, text="Start Quiz", font=("Arial", 18, "bold"),
-           bg="black", fg="white", activebackground="#222222", activeforeground="white",
-           bd=0, padx=35, pady=12, cursor="hand2", command=lambda: show_frame(QuizPage)
+           self,
+           text="Start Quiz",
+           font=("Arial", 18, "bold"),
+           bg="black",
+           fg="white",
+           activebackground="#222222",
+           activeforeground="white",
+           bd=0,
+           padx=35,
+           pady=12,
+           cursor="hand2",
+           command=lambda: show_frame(QuizPage)
        )
        start_button.place(relx=0.5, rely=0.90, anchor=CENTER)
 
@@ -104,8 +139,15 @@ class QuizPage(Frame):
 
 
        self.question_label = Label(
-           self, text="", font=("Arial", 25, "bold"), fg="black", bg="#d9d9d9",
-           wraplength=950, justify=CENTER, padx=20, pady=20
+           self,
+           text="",
+           font=("Arial", 25, "bold"),
+           fg="black",
+           bg="#d9d9d9",
+           wraplength=950,
+           justify=CENTER,
+           padx=20,
+           pady=20
        )
        self.question_label.place(relx=0.5, rely=0.10, anchor=CENTER)
 
@@ -120,9 +162,19 @@ class QuizPage(Frame):
 
        for i in range(4):
            btn = Button(
-               self, text="", font=("Arial", 16, "bold"), bg="black", fg="white",
-               activebackground="#333333", activeforeground="white", width=25, height=2,
-               bd=0, wraplength=250, cursor="hand2", command=lambda x=i: self.check_answer(x)
+               self,
+               text="",
+               font=("Arial", 16, "bold"),
+               bg="black",
+               fg="white",
+               activebackground="#333333",
+               activeforeground="white",
+               width=25,
+               height=2,
+               bd=0,
+               wraplength=250,
+               cursor="hand2",
+               command=lambda x=i: self.check_answer(x)
            )
            x, y = positions[i]
            btn.place(relx=x, rely=y, anchor=CENTER)
@@ -133,9 +185,26 @@ class QuizPage(Frame):
        self.feedback_label.place(relx=0.5, rely=0.78, anchor=CENTER)
 
 
-       self.previous_button = Button(self, text="← Previous", font=("Arial", 14, "bold"), bg="#d9d9d9", fg="black",
-                                     bd=0, padx=20, pady=8, cursor="hand2", command=self.previous_question)
-       self.previous_button.place(relx=0.10, rely=0.95, anchor=CENTER)
+       self.previous_button = Button(
+           self,
+           text="← Previous",
+           font=("Arial", 14, "bold"),
+           bg="#d9d9d9",
+           fg="black",
+           bd=0,
+           padx=20,
+           pady=8,
+           cursor="hand2",
+           command=self.previous_question
+       )
+
+
+
+
+
+
+
+
 
 
        self.next_button = Button(self, text="Next →", font=("Arial", 14, "bold"), bg="black", fg="white", bd=0,
@@ -159,7 +228,8 @@ class QuizPage(Frame):
 
        try:
            opened_img = Image.open(q_data["image"])
-           self.current_img = ImageTk.PhotoImage(opened_img)
+           resized_img = opened_img.resize((QUIZ_IMAGE_WIDTH, QUIZ_IMAGE_HEIGHT), Image.Resampling.LANCZOS)
+           self.current_img = ImageTk.PhotoImage(resized_img)
            self.image_label.config(image=self.current_img, text="")
            self.image_label.image = self.current_img
        except Exception:
@@ -224,6 +294,8 @@ class QuizPage(Frame):
 class EndPage(Frame):
    def __init__(self, parent):
        super().__init__(parent, bg=MAIN_GREEN)
+
+
        self.center_box = Frame(self, bg="#155724", padx=50, pady=40, bd=2, relief=SOLID)
        self.center_box.place(relx=0.5, rely=0.5, anchor=CENTER)
 
@@ -248,12 +320,53 @@ class EndPage(Frame):
 
 
 
-# Window orchestration mapping loop
-for F in (HomePage, QuizPage, EndPage):
-   frame = F(container)
-   frames[F] = frame
-   frame.place(relx=0, rely=0, relwidth=1, relheight=1)
 
+class EndPage(Frame):
+    def __init__(self, parent):
+        super().__init__(parent, bg=MAIN_GREEN)
+
+        self.center_box = Frame(self, bg=MAIN_GREEN)
+        self.center_box.place(relx=0.5, rely=0.5, anchor=CENTER)
+
+        self.msg_label = Label(
+            self.center_box,
+            text="Great work!!",
+            font=("Arial", 60, "bold"),
+            fg="white",
+            bg=MAIN_GREEN,
+            pady=20
+        )
+        self.msg_label.pack()
+
+        self.score_display = Label(
+            self.center_box,
+            text="",
+            font=("Arial", 45, "bold"),
+            fg="white",
+            bg=MAIN_GREEN,
+            pady=20
+        )
+        self.score_display.pack()
+
+        self.thank_label = Label(
+            self.center_box,
+            text="Thank You for Playing!!!",
+            font=("Arial", 35, "bold"),
+            fg="white",
+            bg=MAIN_GREEN,
+            pady=20
+        )
+        self.thank_label.pack()
+
+    def update_page(self):
+        self.score_display.config(text=f"Your Final Score: {score} / {len(questions)}")
+
+
+# Completely fresh window initialization code
+for F in (HomePage, QuizPage, EndPage):
+    frame = F(container)
+    frames[F] = frame
+    frame.place(relx=0, rely=0, relwidth=1, relheight=1)
 
 show_frame(HomePage)
 root.mainloop()
