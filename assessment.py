@@ -370,3 +370,5 @@ for F in (HomePage, QuizPage, EndPage):
 
 show_frame(HomePage)
 root.mainloop()
+
+#jh,kh.kjklk/;lk.lkjhlkijhli
